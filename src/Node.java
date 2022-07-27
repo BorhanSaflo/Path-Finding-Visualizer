@@ -41,13 +41,13 @@ public class Node extends JPanel {
 
         switch (state) {
             case UNVISITED:
-                g2.setColor(Color.WHITE);
+                g2.setColor(new Color(242, 242, 242));
                 break;
             case OPEN:
                 g2.setColor(Color.CYAN);
                 break;
             case CLOSED:
-                g2.setColor(Color.BLUE);
+                g2.setColor(new Color(219, 219, 219));
                 break;
             case START:
                 g2.setColor(Color.GREEN);

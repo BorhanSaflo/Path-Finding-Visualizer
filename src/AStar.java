@@ -168,14 +168,17 @@ public class AStar {
             pathLength = path.size();
             pathCost = end.getGCost();
         }
-
-        // update the state of the nodes in the path
-        for (Node node : path) {
-            node.setState(State.PATH);
-        }
     }
 
     public ArrayList<Node> getPath() {
         return path;
+    }
+
+    public ArrayList<Node> getClosedList() {
+        return closedList;
+    }
+
+    public int getPathLength() {
+        return pathLength;
     }
 }

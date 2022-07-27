@@ -2,6 +2,10 @@ import javax.swing.JPanel;
 import java.awt.Graphics;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.util.Timer;
+import java.util.TimerTask;
 
 public class Grid extends JPanel {
 
@@ -48,17 +52,17 @@ public class Grid extends JPanel {
     }
 
     public void findPath() {
-        clearPath();
+        clear();
         aStar = new AStar(grid, start, end, gridWidth, gridHeight, nodeWidth, nodeHeight);
         aStar.findPath();
-        repaint();
+        animateClosedNodes();
     }
 
-    public void clearPath() {
-        if (aStar != null) {
-            for (Node node : aStar.getPath()) {
-                if (node.getState() == State.PATH) {
-                    node.setState(State.UNVISITED);
+    public void clear() {
+        for (int i = 0; i < gridWidth; i++) {
+            for (int j = 0; j < gridHeight; j++) {
+                if (grid[i][j].getState() == State.CLOSED || grid[i][j].getState() == State.PATH) {
+                    grid[i][j].setState(State.UNVISITED);
                 }
             }
         }
@@ -77,7 +81,7 @@ public class Grid extends JPanel {
 
     public void changeCellState(int x, int y) {
         Node node = grid[x][y];
-        clearPath();
+        clear();
         if (selectedState == State.START) {
             this.start.setState(State.UNVISITED);
             this.start = node;
@@ -90,6 +94,42 @@ public class Grid extends JPanel {
             node.setState(State.WALL);
         }
         repaint();
+    }
+
+    public void animatePathNodes() {
+        Timer timer = new Timer();
+        timer.schedule(new TimerTask() {
+            @Override
+            public void run() {
+                if (aStar.getPath().isEmpty()) {
+                    timer.cancel();
+                } else {
+                    Node node = aStar.getPath().remove(0);
+                    node.setState(State.PATH);
+                    repaint();
+                }
+            }
+        }, 0, 40);
+    }
+
+    public void animateClosedNodes() {
+        Timer timer = new Timer();
+        timer.schedule(new TimerTask() {
+            @Override
+            public void run() {
+                if (aStar.getClosedList().isEmpty()) {
+                    timer.cancel();
+                    animatePathNodes();
+
+                } else {
+                    Node node = aStar.getClosedList().remove(0);
+                    if (node.getState() != State.START && node.getState() != State.END) {
+                        node.setState(State.CLOSED);
+                    }
+                    repaint();
+                }
+            }
+        }, 0, 5);
     }
 
     @Override
@@ -108,5 +148,12 @@ public class Grid extends JPanel {
 
     public Node getCell(int x, int y) {
         return grid[x][y];
+    }
+
+    public int getPathLength() {
+        if (aStar == null) {
+            return 0;
+        }
+        return aStar.getPathLength();
     }
 }

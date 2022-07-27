@@ -28,6 +28,10 @@ public class Main extends JFrame {
         this.setResizable(false);
         this.setVisible(true);
 
+        // Grid
+        Grid grid = new Grid(GRID_WIDTH, GRID_HEIGHT, NODE_WIDTH, NODE_HEIGHT);
+        this.add(grid, BorderLayout.CENTER);
+
         // Side Panel
         JPanel sidePanel = new JPanel();
         sidePanel.setPreferredSize(new java.awt.Dimension(SIDE_PANEL_WIDTH, WINDOW_HEIGHT));
@@ -63,17 +67,14 @@ public class Main extends JFrame {
         // Info Container
         JPanel infoContainer = new JPanel();
         infoContainer.setPreferredSize(new java.awt.Dimension(SIDE_PANEL_WIDTH - 20, WINDOW_HEIGHT / 5));
-        JLabel startLabel = new JLabel("Path Length: ");
-        startLabel.setForeground(Color.WHITE);
+        JLabel pathLengthLabel = new JLabel("Path Length: " + grid.getPathLength());
+        pathLengthLabel.setForeground(Color.WHITE);
         infoContainer.setOpaque(false);
         infoContainer.setBorder(BorderFactory.createTitledBorder(BorderFactory.createLineBorder(Color.WHITE),
                 "Path", javax.swing.border.TitledBorder.CENTER, javax.swing.border.TitledBorder.TOP,
                 new java.awt.Font("Serif", java.awt.Font.BOLD, 12), Color.WHITE));
-        infoContainer.add(startLabel);
+        infoContainer.add(pathLengthLabel);
         sidePanel.add(infoContainer, BorderLayout.CENTER);
-
-        Grid grid = new Grid(GRID_WIDTH, GRID_HEIGHT, NODE_WIDTH, NODE_HEIGHT);
-        this.add(grid, BorderLayout.CENTER);
 
         startButton.addActionListener(new ActionListener() {
             @Override
@@ -98,6 +99,7 @@ public class Main extends JFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
                 grid.findPath();
+                pathLengthLabel.setText("Path Length: " + grid.getPathLength());
             }
         });
     }
