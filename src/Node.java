@@ -17,7 +17,7 @@ public class Node extends JPanel {
     private int fCost;
     private Node parent;
 
-    private Color color;
+    private Color borderColor;
     private Shape shape;
     private State state;
 
@@ -31,7 +31,7 @@ public class Node extends JPanel {
         this.hCost = 0;
         this.fCost = 0;
         this.parent = null;
-        this.color = Color.BLACK;
+        this.borderColor = Color.BLACK;
         this.shape = new Rectangle2D.Double(x, y, nodeWidth, nodeHeight);
     }
 
@@ -64,7 +64,7 @@ public class Node extends JPanel {
         }
 
         g2.fill(shape);
-        g2.setColor(Color.BLACK);
+        g2.setColor(borderColor);
         g2.draw(shape);
     }
 
@@ -136,12 +136,8 @@ public class Node extends JPanel {
         this.parent = parent;
     }
 
-    public Color getColor() {
-        return color;
-    }
-
-    public void setColor(Color color) {
-        this.color = color;
+    public void setBorderColor(Color color) {
+        this.borderColor = color;
     }
 
     public State getState() {

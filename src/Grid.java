@@ -1,9 +1,11 @@
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import java.awt.Graphics;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.Timer;
 import java.util.TimerTask;
+import java.awt.Color;
 
 public class Grid extends JPanel {
 
@@ -137,8 +139,11 @@ public class Grid extends JPanel {
             public void run() {
                 if (aStar.getClosedList().isEmpty()) {
                     timer.cancel();
-                    animatePathNodes();
-
+                    if (aStar.getPath().isEmpty()) {
+                        pathNotFound();
+                    } else {
+                        animatePathNodes();
+                    }
                 } else {
                     Node node = aStar.getClosedList().remove(0);
                     if (node.getState() != State.START && node.getState() != State.END) {
@@ -173,5 +178,27 @@ public class Grid extends JPanel {
             return 0;
         }
         return aStar.getPathLength();
+    }
+
+    public void changeBorderColor(Color color) {
+        for (int i = 0; i < gridWidth; i++) {
+            for (int j = 0; j < gridHeight; j++) {
+                grid[i][j].setBorderColor(color);
+            }
+        }
+        repaint();
+    }
+
+    public void pathNotFound() {
+        try {
+            for (int i = 0; i < 3; i++) {
+                changeBorderColor(Color.RED);
+                Thread.sleep(300);
+                changeBorderColor(Color.BLACK);
+                Thread.sleep(300);
+            }
+        } catch (InterruptedException ex) {
+            System.out.println("Error: " + ex.getMessage());
+        }
     }
 }
