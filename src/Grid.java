@@ -32,9 +32,9 @@ public class Grid extends JPanel {
             }
         }
         this.start = grid[0][0];
-        grid[0][0].setState(State.START);
+        this.start.setState(State.START);
         this.end = grid[width - 1][height - 1];
-        grid[width - 1][height - 1].setState(State.END);
+        this.end.setState(State.END);
 
         addMouseListener(new MouseAdapter() {
             @Override
@@ -66,6 +66,21 @@ public class Grid extends JPanel {
                 }
             }
         }
+        repaint();
+    }
+
+    public void reset() {
+        for (int i = 0; i < gridWidth; i++) {
+            for (int j = 0; j < gridHeight; j++) {
+                if (grid[i][j].getState() != State.UNVISITED) {
+                    grid[i][j].setState(State.UNVISITED);
+                }
+            }
+        }
+        start = grid[0][0];
+        start.setState(State.START);
+        end = grid[gridWidth - 1][gridHeight - 1];
+        end.setState(State.END);
         repaint();
     }
 

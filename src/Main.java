@@ -39,14 +39,18 @@ public class Main extends JFrame {
         this.add(sidePanel, BorderLayout.EAST);
 
         // Controls Container
-        JPanel controlsContainer = new JPanel();
+        JPanel controlsContainer = new JPanel(new GridLayout(3, 1));
         controlsContainer.setPreferredSize(new java.awt.Dimension(SIDE_PANEL_WIDTH - 20, (WINDOW_HEIGHT / 3) - 50));
         controlsContainer.setOpaque(false);
         controlsContainer.setBorder(BorderFactory.createTitledBorder(BorderFactory.createLineBorder(Color.WHITE),
                 "Controls", javax.swing.border.TitledBorder.CENTER, javax.swing.border.TitledBorder.TOP,
                 new java.awt.Font("Serif", java.awt.Font.BOLD, 12), Color.WHITE));
         JButton visualizeButton = new JButton("Visualize");
+        JButton clearButton = new JButton("Clear");
+        JButton resetButton = new JButton("Reset");
         controlsContainer.add(visualizeButton);
+        controlsContainer.add(clearButton);
+        controlsContainer.add(resetButton);
         sidePanel.add(controlsContainer);
 
         // Nodes Container
@@ -100,6 +104,21 @@ public class Main extends JFrame {
             public void actionPerformed(ActionEvent e) {
                 grid.findPath();
                 pathLengthLabel.setText("Path Length: " + grid.getPathLength());
+            }
+        });
+
+        clearButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                grid.clear();
+            }
+        });
+
+        resetButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                grid.reset();
+                pathLengthLabel.setText("Path Length: 0");
             }
         });
     }
