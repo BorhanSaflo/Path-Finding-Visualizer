@@ -1,3 +1,3 @@
 public enum State {
-    EMPTY, BORDER, PATH, START, END
+    UNVISITED, OPEN, CLOSED, START, END, PATH, WALL
 }

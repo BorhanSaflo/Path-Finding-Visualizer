@@ -5,21 +5,31 @@ import java.awt.event.MouseEvent;
 
 public class Grid extends JPanel {
 
-    private int width;
-    private int height;
-    private Cell[][] grid;
+    private int gridWidth;
+    private int gridHeight;
+    private int nodeWidth;
+    private int nodeHeight;
+    private Node[][] grid;
+    private Node start;
+    private Node end;
     private State selectedState;
 
-    public Grid(int width, int height, int cellWidth, int cellHeight) {
+    public Grid(int width, int height, int nodeWidth, int nodeHeight) {
         this.selectedState = State.START;
-        this.width = width;
-        this.height = height;
-        this.grid = new Cell[width][height];
+        this.gridWidth = width;
+        this.gridHeight = height;
+        this.nodeWidth = nodeWidth;
+        this.nodeHeight = nodeHeight;
+        this.grid = new Node[width][height];
         for (int i = 0; i < width; i++) {
             for (int j = 0; j < height; j++) {
-                grid[i][j] = new Cell(i * cellWidth, j * cellHeight, cellWidth, cellHeight);
+                grid[i][j] = new Node(i * nodeWidth, j * nodeHeight, nodeWidth, nodeHeight);
             }
         }
+        this.start = grid[0][0];
+        grid[0][0].setState(State.START);
+        this.end = grid[width - 1][height - 1];
+        grid[width - 1][height - 1].setState(State.END);
 
         addMouseListener(new MouseAdapter() {
             @Override
@@ -36,9 +46,15 @@ public class Grid extends JPanel {
         });
     }
 
+    public void findPath() {
+        AStar aStar = new AStar(grid, start, end, gridWidth, gridHeight, nodeWidth, nodeHeight);
+        aStar.findPath();
+        repaint();
+    }
+
     public void checkCell(int x, int y) {
-        for (int i = 0; i < width; i++) {
-            for (int j = 0; j < height; j++) {
+        for (int i = 0; i < gridWidth; i++) {
+            for (int j = 0; j < gridHeight; j++) {
                 if (grid[i][j].contains(x, y)) {
                     changeCellState(i, j);
                 }
@@ -48,11 +64,13 @@ public class Grid extends JPanel {
 
     public void changeCellState(int x, int y) {
         if (selectedState == State.START) {
+            this.start = grid[x][y];
             grid[x][y].setState(State.START);
         } else if (selectedState == State.END) {
+            this.end = grid[x][y];
             grid[x][y].setState(State.END);
-        } else if (selectedState == State.BORDER) {
-            grid[x][y].setState(State.BORDER);
+        } else if (selectedState == State.WALL) {
+            grid[x][y].setState(State.WALL);
         }
         repaint();
     }
@@ -60,8 +78,8 @@ public class Grid extends JPanel {
     @Override
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
-        for (int i = 0; i < width; i++) {
-            for (int j = 0; j < height; j++) {
+        for (int i = 0; i < gridWidth; i++) {
+            for (int j = 0; j < gridHeight; j++) {
                 grid[i][j].paintComponent(g);
             }
         }
@@ -69,5 +87,9 @@ public class Grid extends JPanel {
 
     public void setSelectedState(State currentState) {
         this.selectedState = currentState;
+    }
+
+    public Node getCell(int x, int y) {
+        return grid[x][y];
     }
 }

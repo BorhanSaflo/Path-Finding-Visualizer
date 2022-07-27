@@ -12,10 +12,10 @@ public class Main extends JFrame {
     private static final int WINDOW_WIDTH = 800;
     private static final int WINDOW_HEIGHT = 600;
     private static final int BUTTONS_CONTAINER_HEIGHT = 50;
-    private static final int CELL_WIDTH = 15;
-    private static final int CELL_HEIGHT = 15;
-    private static final int GRID_WIDTH = WINDOW_WIDTH / CELL_WIDTH;
-    private static final int GRID_HEIGHT = (WINDOW_HEIGHT - (BUTTONS_CONTAINER_HEIGHT + 2 * CELL_HEIGHT)) / CELL_HEIGHT;
+    private static final int CELL_WIDTH = 50;
+    private static final int CELL_HEIGHT = 50;
+    private static final int GRID_WIDTH = 10;
+    private static final int GRID_HEIGHT = 10;
 
     public Main() {
         this.setTitle("Path Finding Visualizer");
@@ -31,7 +31,7 @@ public class Main extends JFrame {
 
         JButton startButton = new JButton("Start");
         JButton endButton = new JButton("End");
-        JButton borderButton = new JButton("Border");
+        JButton borderButton = new JButton("Wall");
         buttonsContainer.add(startButton);
         buttonsContainer.add(endButton);
         buttonsContainer.add(borderButton);
@@ -45,6 +45,7 @@ public class Main extends JFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
                 grid.setSelectedState(State.START);
+                grid.findPath();
             }
         });
         endButton.addActionListener(new ActionListener() {
@@ -56,7 +57,7 @@ public class Main extends JFrame {
         borderButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                grid.setSelectedState(State.BORDER);
+                grid.setSelectedState(State.WALL);
             }
         });
     }
