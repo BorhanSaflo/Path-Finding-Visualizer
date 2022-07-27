@@ -1,8 +1,11 @@
 import javax.swing.SwingUtilities;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import java.awt.BorderLayout;
+import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.Color;
@@ -11,11 +14,11 @@ public class Main extends JFrame {
 
     private static final int WINDOW_WIDTH = 800;
     private static final int WINDOW_HEIGHT = 600;
-    private static final int BUTTONS_CONTAINER_HEIGHT = 50;
-    private static final int CELL_WIDTH = 50;
-    private static final int CELL_HEIGHT = 50;
-    private static final int GRID_WIDTH = 10;
-    private static final int GRID_HEIGHT = 10;
+    private static final int SIDE_PANEL_WIDTH = 150;
+    private static final int NODE_WIDTH = 25;
+    private static final int NODE_HEIGHT = 25;
+    private static final int GRID_WIDTH = (WINDOW_WIDTH - SIDE_PANEL_WIDTH) / NODE_WIDTH;
+    private static final int GRID_HEIGHT = (WINDOW_HEIGHT - NODE_HEIGHT) / NODE_HEIGHT;
 
     public Main() {
         this.setTitle("Path Finding Visualizer");
@@ -25,22 +28,51 @@ public class Main extends JFrame {
         this.setResizable(false);
         this.setVisible(true);
 
-        JPanel buttonsContainer = new JPanel();
-        buttonsContainer.setPreferredSize(new java.awt.Dimension(WINDOW_WIDTH, BUTTONS_CONTAINER_HEIGHT));
-        buttonsContainer.setBackground(Color.DARK_GRAY);
+        // Side Panel
+        JPanel sidePanel = new JPanel();
+        sidePanel.setPreferredSize(new java.awt.Dimension(SIDE_PANEL_WIDTH, WINDOW_HEIGHT));
+        sidePanel.setBackground(new Color(23, 35, 51));
+        this.add(sidePanel, BorderLayout.EAST);
 
+        // Controls Container
+        JPanel controlsContainer = new JPanel();
+        controlsContainer.setPreferredSize(new java.awt.Dimension(SIDE_PANEL_WIDTH - 20, (WINDOW_HEIGHT / 3) - 50));
+        controlsContainer.setOpaque(false);
+        controlsContainer.setBorder(BorderFactory.createTitledBorder(BorderFactory.createLineBorder(Color.WHITE),
+                "Controls", javax.swing.border.TitledBorder.CENTER, javax.swing.border.TitledBorder.TOP,
+                new java.awt.Font("Serif", java.awt.Font.BOLD, 12), Color.WHITE));
+        JButton visualizeButton = new JButton("Visualize");
+        controlsContainer.add(visualizeButton);
+        sidePanel.add(controlsContainer);
+
+        // Nodes Container
+        JPanel nodesContainer = new JPanel(new GridLayout(4, 1));
+        nodesContainer.setPreferredSize(new java.awt.Dimension(SIDE_PANEL_WIDTH - 20, WINDOW_HEIGHT / 3));
         JButton startButton = new JButton("Start");
         JButton endButton = new JButton("End");
         JButton borderButton = new JButton("Wall");
-        JButton visualizeButton = new JButton("Visualize");
-        buttonsContainer.add(startButton);
-        buttonsContainer.add(endButton);
-        buttonsContainer.add(borderButton);
-        buttonsContainer.add(visualizeButton);
+        nodesContainer.add(startButton);
+        nodesContainer.add(endButton);
+        nodesContainer.add(borderButton);
+        nodesContainer.setBorder(BorderFactory.createTitledBorder(BorderFactory.createLineBorder(Color.WHITE),
+                "Nodes", javax.swing.border.TitledBorder.CENTER, javax.swing.border.TitledBorder.TOP,
+                new java.awt.Font("Serif", java.awt.Font.BOLD, 12), Color.WHITE));
+        nodesContainer.setOpaque(false);
+        sidePanel.add(nodesContainer, BorderLayout.CENTER);
 
-        this.add(buttonsContainer, BorderLayout.SOUTH);
+        // Info Container
+        JPanel infoContainer = new JPanel();
+        infoContainer.setPreferredSize(new java.awt.Dimension(SIDE_PANEL_WIDTH - 20, WINDOW_HEIGHT / 5));
+        JLabel startLabel = new JLabel("Path Length: ");
+        startLabel.setForeground(Color.WHITE);
+        infoContainer.setOpaque(false);
+        infoContainer.setBorder(BorderFactory.createTitledBorder(BorderFactory.createLineBorder(Color.WHITE),
+                "Path", javax.swing.border.TitledBorder.CENTER, javax.swing.border.TitledBorder.TOP,
+                new java.awt.Font("Serif", java.awt.Font.BOLD, 12), Color.WHITE));
+        infoContainer.add(startLabel);
+        sidePanel.add(infoContainer, BorderLayout.CENTER);
 
-        Grid grid = new Grid(GRID_WIDTH, GRID_HEIGHT, CELL_WIDTH, CELL_HEIGHT);
+        Grid grid = new Grid(GRID_WIDTH, GRID_HEIGHT, NODE_WIDTH, NODE_HEIGHT);
         this.add(grid, BorderLayout.CENTER);
 
         startButton.addActionListener(new ActionListener() {

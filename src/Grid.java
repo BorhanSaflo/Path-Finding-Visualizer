@@ -76,18 +76,18 @@ public class Grid extends JPanel {
     }
 
     public void changeCellState(int x, int y) {
+        Node node = grid[x][y];
+        clearPath();
         if (selectedState == State.START) {
-            clearPath();
             this.start.setState(State.UNVISITED);
-            this.start = grid[x][y];
-            grid[x][y].setState(State.START);
+            this.start = node;
+            node.setState(State.START);
         } else if (selectedState == State.END) {
-            clearPath();
             this.end.setState(State.UNVISITED);
-            this.end = grid[x][y];
-            grid[x][y].setState(State.END);
-        } else if (selectedState == State.WALL) {
-            grid[x][y].setState(State.WALL);
+            this.end = node;
+            node.setState(State.END);
+        } else if (selectedState == State.WALL && node.getState() == State.UNVISITED) {
+            node.setState(State.WALL);
         }
         repaint();
     }
