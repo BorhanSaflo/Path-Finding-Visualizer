@@ -2,8 +2,6 @@ import javax.swing.JPanel;
 import java.awt.Graphics;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -16,6 +14,7 @@ public class Grid extends JPanel {
     private Node[][] grid;
     private Node start;
     private Node end;
+    private Node lastSelectedNode;
     private State selectedState;
     AStar aStar = null;
 
@@ -38,15 +37,15 @@ public class Grid extends JPanel {
 
         addMouseListener(new MouseAdapter() {
             @Override
-            public void mouseClicked(MouseEvent me) {
-                checkCell(me.getX(), me.getY());
+            public void mousePressed(MouseEvent me) {
+                findNode(me.getX(), me.getY());
             }
         });
 
         addMouseMotionListener(new MouseAdapter() {
             @Override
             public void mouseDragged(MouseEvent me) {
-                checkCell(me.getX(), me.getY());
+                findNode(me.getX(), me.getY());
             }
         });
     }
@@ -84,18 +83,17 @@ public class Grid extends JPanel {
         repaint();
     }
 
-    public void checkCell(int x, int y) {
+    public void findNode(int x, int y) {
         for (int i = 0; i < gridWidth; i++) {
             for (int j = 0; j < gridHeight; j++) {
                 if (grid[i][j].contains(x, y)) {
-                    changeCellState(i, j);
+                    changeNodeState(grid[i][j]);
                 }
             }
         }
     }
 
-    public void changeCellState(int x, int y) {
-        Node node = grid[x][y];
+    public void changeNodeState(Node node) {
         clear();
         if (selectedState == State.START) {
             this.start.setState(State.UNVISITED);
@@ -105,8 +103,13 @@ public class Grid extends JPanel {
             this.end.setState(State.UNVISITED);
             this.end = node;
             node.setState(State.END);
-        } else if (selectedState == State.WALL && node.getState() == State.UNVISITED) {
-            node.setState(State.WALL);
+        } else if (selectedState == State.WALL && node != lastSelectedNode) {
+            if (node.getState() == State.UNVISITED) {
+                node.setState(State.WALL);
+            } else if (node.getState() == State.WALL) {
+                node.setState(State.UNVISITED);
+            }
+            lastSelectedNode = node;
         }
         repaint();
     }
