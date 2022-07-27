@@ -102,7 +102,7 @@ public class AStar {
         }
     }
 
-    //print f costs
+    // print f costs
     public void printFCosts() {
         for (int i = 0; i < gridWidth; i++) {
             for (int j = 0; j < gridHeight; j++) {
@@ -159,24 +159,23 @@ public class AStar {
 
         // if path is found, get the path from start to end
         if (pathFound) {
-        Node current = end;
-        while (!current.equals(start)) {
-        path.add(current);
-        current = current.getParent();
-        }
-        path.add(start);
-        Collections.reverse(path);
-        pathLength = path.size();
-        pathCost = end.getGCost();
+            Node current = end.getParent();
+            while (!current.equals(start)) {
+                path.add(current);
+                current = current.getParent();
+            }
+            Collections.reverse(path);
+            pathLength = path.size();
+            pathCost = end.getGCost();
         }
 
         // update the state of the nodes in the path
         for (Node node : path) {
-        node.setState(State.PATH);
+            node.setState(State.PATH);
         }
-
-        //printGCosts();
-
     }
 
+    public ArrayList<Node> getPath() {
+        return path;
+    }
 }

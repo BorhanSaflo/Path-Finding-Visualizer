@@ -13,6 +13,7 @@ public class Grid extends JPanel {
     private Node start;
     private Node end;
     private State selectedState;
+    AStar aStar = null;
 
     public Grid(int width, int height, int nodeWidth, int nodeHeight) {
         this.selectedState = State.START;
@@ -47,8 +48,20 @@ public class Grid extends JPanel {
     }
 
     public void findPath() {
-        AStar aStar = new AStar(grid, start, end, gridWidth, gridHeight, nodeWidth, nodeHeight);
+        clearPath();
+        aStar = new AStar(grid, start, end, gridWidth, gridHeight, nodeWidth, nodeHeight);
         aStar.findPath();
+        repaint();
+    }
+
+    public void clearPath() {
+        if (aStar != null) {
+            for (Node node : aStar.getPath()) {
+                if (node.getState() == State.PATH) {
+                    node.setState(State.UNVISITED);
+                }
+            }
+        }
         repaint();
     }
 
@@ -64,9 +77,13 @@ public class Grid extends JPanel {
 
     public void changeCellState(int x, int y) {
         if (selectedState == State.START) {
+            clearPath();
+            this.start.setState(State.UNVISITED);
             this.start = grid[x][y];
             grid[x][y].setState(State.START);
         } else if (selectedState == State.END) {
+            clearPath();
+            this.end.setState(State.UNVISITED);
             this.end = grid[x][y];
             grid[x][y].setState(State.END);
         } else if (selectedState == State.WALL) {

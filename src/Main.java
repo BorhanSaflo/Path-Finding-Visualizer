@@ -32,9 +32,11 @@ public class Main extends JFrame {
         JButton startButton = new JButton("Start");
         JButton endButton = new JButton("End");
         JButton borderButton = new JButton("Wall");
+        JButton visualizeButton = new JButton("Visualize");
         buttonsContainer.add(startButton);
         buttonsContainer.add(endButton);
         buttonsContainer.add(borderButton);
+        buttonsContainer.add(visualizeButton);
 
         this.add(buttonsContainer, BorderLayout.SOUTH);
 
@@ -45,7 +47,6 @@ public class Main extends JFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
                 grid.setSelectedState(State.START);
-                grid.findPath();
             }
         });
         endButton.addActionListener(new ActionListener() {
@@ -58,6 +59,13 @@ public class Main extends JFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
                 grid.setSelectedState(State.WALL);
+            }
+        });
+
+        visualizeButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                grid.findPath();
             }
         });
     }

@@ -38,31 +38,34 @@ public class Node extends JPanel {
     @Override
     public void paintComponent(Graphics g) {
         Graphics2D g2 = (Graphics2D) g;
-        g2.setColor(Color.BLACK);
-        g2.draw(shape);
-        if (state == State.WALL) {
-            g2.setColor(Color.BLACK);
-            g2.fill(shape);
-        } else if (state == State.START) {
-            g2.setColor(Color.BLUE);
-            g2.fill(shape);
-        } else if (state == State.END) {
-            g2.setColor(Color.RED);
-            g2.fill(shape);
-        } else if (state == State.OPEN) {
-            g2.setColor(Color.GREEN);
-            g2.fill(shape);
-        } else if (state == State.CLOSED) {
-            g2.setColor(Color.YELLOW);
-            g2.fill(shape);
-        } else if (state == State.UNVISITED) {
-            g2.setColor(Color.WHITE);
-            g2.fill(shape);
-        } else if (state == State.PATH) {
-            g2.setColor(Color.ORANGE);
-            g2.fill(shape);
+
+        switch (state) {
+            case UNVISITED:
+                g2.setColor(Color.WHITE);
+                break;
+            case OPEN:
+                g2.setColor(Color.CYAN);
+                break;
+            case CLOSED:
+                g2.setColor(Color.BLUE);
+                break;
+            case START:
+                g2.setColor(Color.GREEN);
+                break;
+            case END:
+                g2.setColor(Color.RED);
+                break;
+            case PATH:
+                g2.setColor(Color.ORANGE);
+                break;
+            case WALL:
+                g2.setColor(Color.DARK_GRAY);
+                break;
         }
 
+        g2.fill(shape);
+        g2.setColor(Color.BLACK);
+        g2.draw(shape);
     }
 
     public boolean contains(int x, int y) {
