@@ -31,7 +31,7 @@ public class Node extends JPanel {
         this.hCost = 0;
         this.fCost = 0;
         this.parent = null;
-        this.borderColor = Color.BLACK;
+        this.borderColor = new Color(178, 178, 178);
         this.shape = new Rectangle2D.Double(x, y, nodeWidth, nodeHeight);
     }
 

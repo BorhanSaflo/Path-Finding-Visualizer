@@ -194,7 +194,7 @@ public class Grid extends JPanel {
             for (int i = 0; i < 3; i++) {
                 changeBorderColor(found ? new Color(26, 229, 0) : new Color(229, 45, 0));
                 Thread.sleep(300);
-                changeBorderColor(Color.BLACK);
+                changeBorderColor(new Color(178, 178, 178));
                 Thread.sleep(300);
             }
         } catch (InterruptedException ex) {
