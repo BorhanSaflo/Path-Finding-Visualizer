@@ -14,7 +14,6 @@ import java.awt.Font;
 import java.awt.Dimension;
 
 public class Main extends JFrame {
-
     private static final int WINDOW_WIDTH = 800;
     private static final int WINDOW_HEIGHT = 600;
     private static final int SIDE_PANEL_WIDTH = 150;
@@ -24,6 +23,7 @@ public class Main extends JFrame {
     private static final int GRID_HEIGHT = (WINDOW_HEIGHT - (2 * NODE_HEIGHT)) / NODE_HEIGHT;
     private JLabel pathLengthLabel;
     private GridLayout containerLayout;
+    private JButton selectedButton;
 
     public Main() {
         this.setTitle("Path Finding Visualizer");
@@ -81,17 +81,13 @@ public class Main extends JFrame {
             nodeButtons[i].addActionListener(new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent e) {
-                    if (e.getActionCommand().equals("Start")) {
-                        grid.setSelectedState(State.START);
-                    } else if (e.getActionCommand().equals("End")) {
-                        grid.setSelectedState(State.END);
-                    } else if (e.getActionCommand().equals("Wall")) {
-                        grid.setSelectedState(State.WALL);
-                    }
+                    grid.setSelectedState(State.valueOf(e.getActionCommand().toUpperCase()));
+                    highlightSelectedButton((JButton) e.getSource());
                 }
             });
             nodesContainer.add(nodeButtons[i]);
         }
+        highlightSelectedButton(nodeButtons[0]);
         sidePanel.add(nodesContainer);
 
         // Path Stats Container
@@ -104,8 +100,9 @@ public class Main extends JFrame {
 
     public JButton createButton(String text) {
         JButton button = new JButton(text);
+        button.setOpaque(true);
         button.setBorderPainted(false);
-        button.setBackground(new Color(255, 255, 255));
+        button.setBackground(Color.WHITE);
         button.setFocusPainted(false);
         return button;
     }
@@ -119,13 +116,22 @@ public class Main extends JFrame {
                 BorderFactory.createTitledBorder(BorderFactory.createLineBorder(Color.WHITE),
                         title, javax.swing.border.TitledBorder.CENTER, javax.swing.border.TitledBorder.TOP,
                         new Font("Dialog", Font.BOLD, 12), Color.WHITE),
-                BorderFactory.createEmptyBorder(0, 5, 5, 5)));
+                BorderFactory.createEmptyBorder(2, 5, 5, 5)));
         container.setOpaque(false);
         return container;
     }
 
     public void updatePathLengthLabel(int pathLength) {
         pathLengthLabel.setText("Path Length: " + pathLength);
+    }
+
+    public void highlightSelectedButton(JButton button) {
+        if (selectedButton != null) {
+            selectedButton.setBorderPainted(false);
+        }
+        button.setBorderPainted(true);
+        button.setBorder(BorderFactory.createLineBorder(Color.ORANGE, 2));
+        selectedButton = button;
     }
 
     public static void main(String[] args) {

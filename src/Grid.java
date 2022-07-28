@@ -7,24 +7,19 @@ import java.util.TimerTask;
 import java.awt.Color;
 
 public class Grid extends JPanel {
-
     private int gridWidth;
     private int gridHeight;
-    private int nodeWidth;
-    private int nodeHeight;
     private Node[][] grid;
     private Node start;
     private Node end;
     private Node lastSelectedNode;
     private State selectedState;
-    AStar aStar = null;
+    AStar aStar;
 
     public Grid(int width, int height, int nodeWidth, int nodeHeight) {
         this.selectedState = State.START;
         this.gridWidth = width;
         this.gridHeight = height;
-        this.nodeWidth = nodeWidth;
-        this.nodeHeight = nodeHeight;
         this.grid = new Node[width][height];
         for (int i = 0; i < width; i++) {
             for (int j = 0; j < height; j++) {
@@ -53,7 +48,7 @@ public class Grid extends JPanel {
 
     public void findPath() {
         clear();
-        aStar = new AStar(grid, start, end, gridWidth, gridHeight, nodeWidth, nodeHeight);
+        aStar = new AStar(grid, start, end, gridWidth, gridHeight);
         aStar.findPath();
         animateClosedNodes();
     }

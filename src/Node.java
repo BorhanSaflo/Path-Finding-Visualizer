@@ -6,25 +6,22 @@ import java.awt.geom.Rectangle2D;
 import java.awt.Color;
 
 public class Node extends JPanel {
-
     private int x;
     private int y;
     private int nodeWidth;
     private int nodeHeight;
-
     private int gCost;
     private int hCost;
     private int fCost;
     private Node parent;
-
     private Color borderColor;
     private Shape shape;
     private State state;
 
     public Node(int x, int y, int nodeWidth, int nodeHeight) {
         this.state = State.UNVISITED;
-        this.x = x;
-        this.y = y;
+        this.x = x / nodeWidth;
+        this.y = y / nodeHeight;
         this.nodeWidth = nodeWidth;
         this.nodeHeight = nodeHeight;
         this.gCost = 0;
@@ -38,22 +35,21 @@ public class Node extends JPanel {
     @Override
     public void paintComponent(Graphics g) {
         Graphics2D g2 = (Graphics2D) g;
-
         switch (state) {
             case UNVISITED:
                 g2.setColor(new Color(242, 242, 242));
                 break;
             case CLOSED:
-                g2.setColor(new Color(219, 219, 219));
+                g2.setColor(new Color(220, 220, 220));
                 break;
             case START:
-                g2.setColor(new Color(10, 255, 55));
+                g2.setColor(new Color(99, 249, 0));
                 break;
             case END:
-                g2.setColor(new Color(255, 79, 10));
+                g2.setColor(new Color(254, 41, 27));
                 break;
             case PATH:
-                g2.setColor(new Color(255, 185, 10));
+                g2.setColor(new Color(255, 199, 0));
                 break;
             case WALL:
                 g2.setColor(new Color(30, 33, 36));
@@ -74,32 +70,16 @@ public class Node extends JPanel {
         return x;
     }
 
-    public void setX(int x) {
-        this.x = x;
-    }
-
     public int getY() {
         return y;
-    }
-
-    public void setY(int y) {
-        this.y = y;
     }
 
     public int getWidth() {
         return nodeWidth;
     }
 
-    public void setWidth(int width) {
-        this.nodeWidth = width;
-    }
-
     public int getHeight() {
         return nodeHeight;
-    }
-
-    public void setHeight(int height) {
-        this.nodeHeight = height;
     }
 
     public int getGCost() {
