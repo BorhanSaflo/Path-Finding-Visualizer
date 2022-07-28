@@ -1,4 +1,3 @@
-import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import java.awt.Graphics;
 import java.awt.event.MouseAdapter;
@@ -122,6 +121,7 @@ public class Grid extends JPanel {
             @Override
             public void run() {
                 if (aStar.getPath().isEmpty()) {
+                    borderBlinkAnimation(true);
                     timer.cancel();
                 } else {
                     Node node = aStar.getPath().remove(0);
@@ -140,7 +140,7 @@ public class Grid extends JPanel {
                 if (aStar.getClosedList().isEmpty()) {
                     timer.cancel();
                     if (aStar.getPath().isEmpty()) {
-                        pathNotFound();
+                        borderBlinkAnimation(false);
                     } else {
                         animatePathNodes();
                     }
@@ -189,10 +189,10 @@ public class Grid extends JPanel {
         repaint();
     }
 
-    public void pathNotFound() {
+    public void borderBlinkAnimation(boolean found) {
         try {
             for (int i = 0; i < 3; i++) {
-                changeBorderColor(Color.RED);
+                changeBorderColor(found ? new Color(26, 229, 0) : new Color(229, 45, 0));
                 Thread.sleep(300);
                 changeBorderColor(Color.BLACK);
                 Thread.sleep(300);

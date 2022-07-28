@@ -43,29 +43,27 @@ public class Node extends JPanel {
             case UNVISITED:
                 g2.setColor(new Color(242, 242, 242));
                 break;
-            case OPEN:
-                g2.setColor(Color.CYAN);
-                break;
             case CLOSED:
                 g2.setColor(new Color(219, 219, 219));
                 break;
             case START:
-                g2.setColor(Color.GREEN);
+                g2.setColor(new Color(10, 255, 55));
                 break;
             case END:
-                g2.setColor(Color.RED);
+                g2.setColor(new Color(255, 79, 10));
                 break;
             case PATH:
-                g2.setColor(Color.ORANGE);
+                g2.setColor(new Color(255, 185, 10));
                 break;
             case WALL:
-                g2.setColor(Color.DARK_GRAY);
+                g2.setColor(new Color(30, 33, 36));
                 break;
         }
-
         g2.fill(shape);
-        g2.setColor(borderColor);
-        g2.draw(shape);
+        if (state != State.WALL) {
+            g2.setColor(borderColor);
+            g2.draw(shape);
+        }
     }
 
     public boolean contains(int x, int y) {

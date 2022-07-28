@@ -1,4 +1,5 @@
 import javax.swing.SwingUtilities;
+import javax.swing.border.CompoundBorder;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -9,6 +10,8 @@ import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.Color;
+import java.awt.Font;
+import java.awt.Dimension;
 
 public class Main extends JFrame {
 
@@ -17,8 +20,10 @@ public class Main extends JFrame {
     private static final int SIDE_PANEL_WIDTH = 150;
     private static final int NODE_WIDTH = 25;
     private static final int NODE_HEIGHT = 25;
-    private static final int GRID_WIDTH = (WINDOW_WIDTH - SIDE_PANEL_WIDTH) / NODE_WIDTH;
-    private static final int GRID_HEIGHT = (WINDOW_HEIGHT - NODE_HEIGHT) / NODE_HEIGHT;
+    private static final int GRID_WIDTH = (WINDOW_WIDTH - SIDE_PANEL_WIDTH - NODE_WIDTH) / NODE_WIDTH;
+    private static final int GRID_HEIGHT = (WINDOW_HEIGHT - (2 * NODE_HEIGHT)) / NODE_HEIGHT;
+    private JLabel pathLengthLabel;
+    private GridLayout containerLayout;
 
     public Main() {
         this.setTitle("Path Finding Visualizer");
@@ -28,99 +33,99 @@ public class Main extends JFrame {
         this.setResizable(false);
         this.setVisible(true);
 
+        // Container Grid Layout
+        containerLayout = new GridLayout(3, 1);
+        containerLayout.setVgap(10);
+
         // Grid
         Grid grid = new Grid(GRID_WIDTH, GRID_HEIGHT, NODE_WIDTH, NODE_HEIGHT);
         this.add(grid, BorderLayout.CENTER);
 
         // Side Panel
         JPanel sidePanel = new JPanel();
-        sidePanel.setPreferredSize(new java.awt.Dimension(SIDE_PANEL_WIDTH, WINDOW_HEIGHT));
-        sidePanel.setBackground(new Color(23, 35, 51));
+        sidePanel.setPreferredSize(new Dimension(SIDE_PANEL_WIDTH, WINDOW_HEIGHT));
+        sidePanel.setBackground(new Color(30, 33, 36));
         this.add(sidePanel, BorderLayout.EAST);
 
         // Controls Container
-        JPanel controlsContainer = new JPanel(new GridLayout(3, 1));
-        controlsContainer.setPreferredSize(new java.awt.Dimension(SIDE_PANEL_WIDTH - 20, (WINDOW_HEIGHT / 3) - 50));
-        controlsContainer.setOpaque(false);
-        controlsContainer.setBorder(BorderFactory.createTitledBorder(BorderFactory.createLineBorder(Color.WHITE),
-                "Controls", javax.swing.border.TitledBorder.CENTER, javax.swing.border.TitledBorder.TOP,
-                new java.awt.Font("Serif", java.awt.Font.BOLD, 12), Color.WHITE));
-        JButton visualizeButton = new JButton("Visualize");
-        JButton clearButton = new JButton("Clear");
-        JButton resetButton = new JButton("Reset");
-        controlsContainer.add(visualizeButton);
-        controlsContainer.add(clearButton);
-        controlsContainer.add(resetButton);
-        sidePanel.add(controlsContainer);
+        JPanel actionsContainer = createContainer("Actions", true);
+        String[] actions = { "Visualize", "Clear", "Reset" };
+        JButton[] actionButtons = new JButton[actions.length];
+        for (int i = 0; i < actions.length; i++) {
+            actionButtons[i] = createButton(actions[i]);
+            actionButtons[i].addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    if (e.getActionCommand().equals("Visualize")) {
+                        grid.findPath();
+                        updatePathLengthLabel(grid.getPathLength());
+                    } else if (e.getActionCommand().equals("Clear")) {
+                        grid.clear();
+                        updatePathLengthLabel(0);
+                    } else if (e.getActionCommand().equals("Reset")) {
+                        grid.reset();
+                        updatePathLengthLabel(0);
+                    }
+                }
+            });
+            actionsContainer.add(actionButtons[i]);
+        }
+        sidePanel.add(actionsContainer);
 
         // Nodes Container
-        JPanel nodesContainer = new JPanel(new GridLayout(4, 1));
-        nodesContainer.setPreferredSize(new java.awt.Dimension(SIDE_PANEL_WIDTH - 20, WINDOW_HEIGHT / 3));
-        JButton startButton = new JButton("Start");
-        JButton endButton = new JButton("End");
-        JButton borderButton = new JButton("Wall");
-        nodesContainer.add(startButton);
-        nodesContainer.add(endButton);
-        nodesContainer.add(borderButton);
-        nodesContainer.setBorder(BorderFactory.createTitledBorder(BorderFactory.createLineBorder(Color.WHITE),
-                "Nodes", javax.swing.border.TitledBorder.CENTER, javax.swing.border.TitledBorder.TOP,
-                new java.awt.Font("Serif", java.awt.Font.BOLD, 12), Color.WHITE));
-        nodesContainer.setOpaque(false);
-        sidePanel.add(nodesContainer, BorderLayout.CENTER);
+        JPanel nodesContainer = createContainer("Nodes", true);
+        String[] nodes = { "Start", "End", "Wall" };
+        JButton[] nodeButtons = new JButton[actions.length];
+        for (int i = 0; i < nodes.length; i++) {
+            nodeButtons[i] = createButton(nodes[i]);
+            nodeButtons[i].addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    if (e.getActionCommand().equals("Start")) {
+                        grid.setSelectedState(State.START);
+                    } else if (e.getActionCommand().equals("End")) {
+                        grid.setSelectedState(State.END);
+                    } else if (e.getActionCommand().equals("Wall")) {
+                        grid.setSelectedState(State.WALL);
+                    }
+                }
+            });
+            nodesContainer.add(nodeButtons[i]);
+        }
+        sidePanel.add(nodesContainer);
 
-        // Info Container
-        JPanel infoContainer = new JPanel();
-        infoContainer.setPreferredSize(new java.awt.Dimension(SIDE_PANEL_WIDTH - 20, WINDOW_HEIGHT / 5));
-        JLabel pathLengthLabel = new JLabel("Path Length: " + grid.getPathLength());
+        // Path Stats Container
+        JPanel infoContainer = createContainer("Path Stats", false);
+        pathLengthLabel = new JLabel("Path Length: " + grid.getPathLength());
         pathLengthLabel.setForeground(Color.WHITE);
-        infoContainer.setOpaque(false);
-        infoContainer.setBorder(BorderFactory.createTitledBorder(BorderFactory.createLineBorder(Color.WHITE),
-                "Path", javax.swing.border.TitledBorder.CENTER, javax.swing.border.TitledBorder.TOP,
-                new java.awt.Font("Serif", java.awt.Font.BOLD, 12), Color.WHITE));
         infoContainer.add(pathLengthLabel);
-        sidePanel.add(infoContainer, BorderLayout.CENTER);
+        sidePanel.add(infoContainer);
+    }
 
-        startButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                grid.setSelectedState(State.START);
-            }
-        });
-        endButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                grid.setSelectedState(State.END);
-            }
-        });
-        borderButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                grid.setSelectedState(State.WALL);
-            }
-        });
+    public JButton createButton(String text) {
+        JButton button = new JButton(text);
+        button.setBorderPainted(false);
+        button.setBackground(new Color(255, 255, 255));
+        button.setFocusPainted(false);
+        return button;
+    }
 
-        visualizeButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                grid.findPath();
-                pathLengthLabel.setText("Path Length: " + grid.getPathLength());
-            }
-        });
+    public JPanel createContainer(String title, boolean gridLayout) {
+        JPanel container = new JPanel();
+        if (gridLayout)
+            container.setLayout(containerLayout);
+        container.setPreferredSize(new Dimension(SIDE_PANEL_WIDTH - 20, (WINDOW_HEIGHT / 4)));
+        container.setBorder(new CompoundBorder(
+                BorderFactory.createTitledBorder(BorderFactory.createLineBorder(Color.WHITE),
+                        title, javax.swing.border.TitledBorder.CENTER, javax.swing.border.TitledBorder.TOP,
+                        new Font("Dialog", Font.BOLD, 12), Color.WHITE),
+                BorderFactory.createEmptyBorder(0, 5, 5, 5)));
+        container.setOpaque(false);
+        return container;
+    }
 
-        clearButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                grid.clear();
-            }
-        });
-
-        resetButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                grid.reset();
-                pathLengthLabel.setText("Path Length: 0");
-            }
-        });
+    public void updatePathLengthLabel(int pathLength) {
+        pathLengthLabel.setText("Path Length: " + pathLength);
     }
 
     public static void main(String[] args) {
