@@ -3,12 +3,15 @@ import javax.swing.border.CompoundBorder;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.imageio.ImageIO;
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import java.awt.BorderLayout;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.File;
+import java.io.IOException;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.Dimension;
@@ -32,6 +35,11 @@ public class Main extends JFrame {
         this.setLocationRelativeTo(null);
         this.setResizable(false);
         this.setVisible(true);
+        try {
+            this.setIconImage(ImageIO.read(new File("src/Logo.png")));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
         // Container Grid Layout
         containerLayout = new GridLayout(3, 1);
