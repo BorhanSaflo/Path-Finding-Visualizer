@@ -18,12 +18,13 @@ public class Node extends JPanel {
     private Shape shape;
     private State state;
 
-    public Node(int x, int y, int nodeWidth, int nodeHeight) {
-        this.state = State.UNVISITED;
+    public Node(int x, int y, int nodeWidth, int nodeHeight, State state) {
+        this.state = State.EMPTY;
         this.x = x / nodeWidth;
         this.y = y / nodeHeight;
         this.nodeWidth = nodeWidth;
         this.nodeHeight = nodeHeight;
+        this.state = state;
         this.gCost = 0;
         this.hCost = 0;
         this.fCost = 0;
@@ -36,7 +37,7 @@ public class Node extends JPanel {
     public void paintComponent(Graphics g) {
         Graphics2D g2 = (Graphics2D) g;
         switch (state) {
-            case UNVISITED:
+            case EMPTY:
                 g2.setColor(new Color(242, 242, 242));
                 break;
             case CLOSED:

@@ -8,6 +8,7 @@ import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import java.awt.BorderLayout;
 import java.awt.GridLayout;
+import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
@@ -22,10 +23,9 @@ public class Main extends JFrame {
     private static final int SIDE_PANEL_WIDTH = 150;
     private static final int NODE_WIDTH = 25;
     private static final int NODE_HEIGHT = 25;
-    private static final int GRID_WIDTH = (WINDOW_WIDTH - SIDE_PANEL_WIDTH - NODE_WIDTH) / NODE_WIDTH;
-    private static final int GRID_HEIGHT = (WINDOW_HEIGHT - (2 * NODE_HEIGHT)) / NODE_HEIGHT;
+    private static final int GRID_WIDTH = ((WINDOW_WIDTH - SIDE_PANEL_WIDTH) / NODE_WIDTH) - 1;
+    private static final int GRID_HEIGHT = (WINDOW_HEIGHT / NODE_HEIGHT) - 3;
     private JLabel pathLengthLabel;
-    private GridLayout containerLayout;
     private JButton selectedButton;
 
     public Main() {
@@ -41,10 +41,6 @@ public class Main extends JFrame {
             e.printStackTrace();
         }
 
-        // Container Grid Layout
-        containerLayout = new GridLayout(3, 1);
-        containerLayout.setVgap(10);
-
         // Grid
         Grid grid = new Grid(GRID_WIDTH, GRID_HEIGHT, NODE_WIDTH, NODE_HEIGHT);
         this.add(grid, BorderLayout.CENTER);
@@ -56,23 +52,26 @@ public class Main extends JFrame {
         this.add(sidePanel, BorderLayout.EAST);
 
         // Controls Container
-        JPanel actionsContainer = createContainer("Actions", true);
-        String[] actions = { "Visualize", "Clear", "Reset" };
+        String[] actions = { "Visualize Path", "Generate Maze", "Clear Path", "Reset Grid" };
+        JPanel actionsContainer = createContainer("Actions", true, actions.length);
         JButton[] actionButtons = new JButton[actions.length];
         for (int i = 0; i < actions.length; i++) {
             actionButtons[i] = createButton(actions[i]);
             actionButtons[i].addActionListener(new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent e) {
-                    if (e.getActionCommand().equals("Visualize")) {
-                        grid.findPath();
-                        updatePathLengthLabel(grid.getPathLength());
-                    } else if (e.getActionCommand().equals("Clear")) {
-                        grid.clear();
+                    if (!grid.isRunning()) {
                         updatePathLengthLabel(0);
-                    } else if (e.getActionCommand().equals("Reset")) {
-                        grid.reset();
-                        updatePathLengthLabel(0);
+                        if (e.getActionCommand().equals("Visualize Path")) {
+                            grid.findPath();
+                            updatePathLengthLabel(grid.getPathLength());
+                        } else if (e.getActionCommand().equals("Generate Maze")) {
+                            grid.generateMaze();
+                        } else if (e.getActionCommand().equals("Clear Path")) {
+                            grid.clear();
+                        } else if (e.getActionCommand().equals("Reset Grid")) {
+                            grid.reset();
+                        }
                     }
                 }
             });
@@ -81,8 +80,8 @@ public class Main extends JFrame {
         sidePanel.add(actionsContainer);
 
         // Nodes Container
-        JPanel nodesContainer = createContainer("Nodes", true);
         String[] nodes = { "Start", "End", "Wall" };
+        JPanel nodesContainer = createContainer("Nodes", true, nodes.length);
         JButton[] nodeButtons = new JButton[actions.length];
         for (int i = 0; i < nodes.length; i++) {
             nodeButtons[i] = createButton(nodes[i]);
@@ -99,7 +98,7 @@ public class Main extends JFrame {
         sidePanel.add(nodesContainer);
 
         // Path Stats Container
-        JPanel infoContainer = createContainer("Path Stats", false);
+        JPanel infoContainer = createContainer("Path Stats", false, 0);
         pathLengthLabel = new JLabel("Path Length: " + grid.getPathLength());
         pathLengthLabel.setForeground(Color.WHITE);
         infoContainer.add(pathLengthLabel);
@@ -112,14 +111,18 @@ public class Main extends JFrame {
         button.setBorderPainted(false);
         button.setBackground(Color.WHITE);
         button.setFocusPainted(false);
+        button.setMargin(new Insets(0, -20, 0, -20));
         return button;
     }
 
-    public JPanel createContainer(String title, boolean gridLayout) {
+    public JPanel createContainer(String title, boolean gridLayout, int buttonsLength) {
         JPanel container = new JPanel();
-        if (gridLayout)
-            container.setLayout(containerLayout);
-        container.setPreferredSize(new Dimension(SIDE_PANEL_WIDTH - 20, (WINDOW_HEIGHT / 4)));
+        if (gridLayout) {
+            container.setLayout(new GridLayout(buttonsLength, 1, 0, 10));
+            container.setPreferredSize(new Dimension(SIDE_PANEL_WIDTH - 20, 50 * buttonsLength));
+        } else {
+            container.setPreferredSize(new Dimension(SIDE_PANEL_WIDTH - 20, (WINDOW_HEIGHT / 4)));
+        }
         container.setBorder(new CompoundBorder(
                 BorderFactory.createTitledBorder(BorderFactory.createLineBorder(Color.WHITE),
                         title, javax.swing.border.TitledBorder.CENTER, javax.swing.border.TitledBorder.TOP,
