@@ -38,14 +38,18 @@ public class Grid extends JPanel {
         addMouseListener(new MouseAdapter() {
             @Override
             public void mousePressed(MouseEvent me) {
-                findNode(me.getX(), me.getY());
+                if (!isRunning) {
+                    findNode(me.getX(), me.getY());
+                }
             }
         });
 
         addMouseMotionListener(new MouseAdapter() {
             @Override
             public void mouseDragged(MouseEvent me) {
-                findNode(me.getX(), me.getY());
+                if (!isRunning) {
+                    findNode(me.getX(), me.getY());
+                }
             }
         });
     }
