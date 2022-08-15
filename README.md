@@ -1,6 +1,9 @@
 # Path-Finding-Visualizer
 A Java application that lets users generate or create their own mazes by placing wall barriers, a start point, and an end point on a 2D grid and then watching the A* algorithm find the shortest and most efficient path through the maze.
 
+![Path Finding Visualizer](https://user-images.githubusercontent.com/60056206/184668376-b0b07c64-645d-42b7-9a2b-1297f8829dd7.png)
+
+
 ### Path Finding Using the A* Algorithm
 The A* algorithm in the grid below begins at the start point (green node) and considers all adjacent nodes. After populating the list of neighboring nodes, it filters out those that are inaccessible (walls obstacles, out of bounds). The node with the lowest cost is then chosen. This process is repeated until the shortest Manhattan distance to the end point (red node) is found.
 
